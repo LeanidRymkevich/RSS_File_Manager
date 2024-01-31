@@ -1,0 +1,28 @@
+{
+  "name": "rss_file_manager",
+  "version": "1.0.0",
+  "description": "Solution to the RSS node.js task - 'File Manager'",
+  "main": "index.js",
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "type": "module",
+  "scripts": {
+    "start": "node src/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LeanidRymkevich/RSS_File_Manager.git"
+  },
+  "keywords": [
+    "Node.js",
+    "File",
+    "Manager"
+  ],
+  "author": "Leanid Rymkevich",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/LeanidRymkevich/RSS_File_Manager/issues"
+  },
+  "homepage": "https://github.com/LeanidRymkevich/RSS_File_Manager#readme"
+}
