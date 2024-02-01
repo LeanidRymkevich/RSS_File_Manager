@@ -1,6 +1,6 @@
 import { homedir } from 'os';
-import { sep, isAbsolute, parse, resolve } from 'path';
-import { access } from 'fs/promises';
+import { sep, isAbsolute, parse, resolve, join } from 'path';
+import { access, readdir, stat } from 'fs/promises';
 
 import CustomError from './CustomError.js';
 
@@ -36,11 +36,9 @@ const up = () => {
 
 const cd = async (pathToDir) => {
   const {ext} = parse(pathToDir[0]);
-
   if (ext) throw new CustomError(FOLDER_NOT_EXISTS_MSG);
   
   const path = getAbsolutePath(pathToDir[0]);
-
   try {
     await access(path);
     workingDirPath = path;
@@ -49,10 +47,36 @@ const cd = async (pathToDir) => {
   }
 };
 
-const ls = () => {
-  console.log('ls-command');
-};
+const ls = async () => {
+  const folderItemsNames = await readdir (workingDirPath);
+  const isDirsPromises = folderItemsNames.map(item => stat(join(workingDirPath, item)).then(stat => stat.isDirectory()));
+  const isDirObjs = await Promise.allSettled(isDirsPromises);
+  const itemsInfo = [];
 
+  for (let i = 0; i < isDirObjs.length; i++) {
+    const isDirsObj = isDirObjs[i];
+
+    if (isDirsObj.status === 'rejected') continue;
+
+    const info = {
+      name: folderItemsNames[i],
+      isDir: isDirsObj.value,
+    };
+    itemsInfo.push(info);
+  }
+  const sortedItemsInfo = itemsInfo.sort((a, b) => {
+    if ((a.isDir && b.isDir) || (!a.isDir && !b.isDir)) {
+      return a.name.localeCompare(b.name);
+    } else if (a.isDir && !b.isDir){
+      return -1;
+    } else {
+      return 1;
+    }
+  });
+  sortedItemsInfo.forEach(item => console.log(item));
+  // add console.table
+};
+ls()
 export {
   workingDirPath,
   getAbsolutePath,
