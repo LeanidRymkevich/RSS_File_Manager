@@ -14,8 +14,10 @@ const customCopyFile = async (pathToFile, pathToFolder) => {
 
   try {
     await mkdir(pathToFolder, {recursive: true});
+
     const rs = createReadStream(pathToFile);
     const ws = createWriteStream(destinationPath);
+  
     await pipeline(rs, ws);
   } catch {
     console.log(ERROR_MSG);
