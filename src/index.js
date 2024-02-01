@@ -1,34 +1,22 @@
-import {
-  getEnteredUserName,
-  printEnterCommandMsg,
+import { 
   printWelcomeMsg,
-  finishAppExecution,
-  parseCommand
-} from './utils.js';
-import { homeDirPath } from './os_logic.js';
-import { COMMANDS } from './constants.js'
+  printEnterCommandMsg
+} from './UI.js';
+import { parseCommand } from './utils.js';
+import executeCommand from './controller.js';
+import { COMMANDS } from './constants.js';
 
 const launchApp = async () => {
-  const userName = getEnteredUserName();
-  const rs = process.stdin;
+  printWelcomeMsg();
+  printEnterCommandMsg();
 
-  let workingDirPath = homeDirPath;
-
-  printWelcomeMsg(userName);
-  printEnterCommandMsg(workingDirPath);
-
-  rs.on('data', data => {
+  process.stdin.on('data', data => {
     const command = parseCommand(data);
-
-    if (command.name === COMMANDS.EXIT) {
-      finishAppExecution(userName);
-    } else {
-      console.log(`CommandName=${command.name} CommandArgs=${command.args}`);
-      printEnterCommandMsg(workingDirPath);
-    }
-  })
+    executeCommand(command);
+    printEnterCommandMsg();
+  });
   
-  process.on('SIGINT', () => finishAppExecution(userName));
+  process.on('SIGINT', () => executeCommand({name: COMMANDS.EXIT, args: undefined}));
 };
 
 await launchApp();
