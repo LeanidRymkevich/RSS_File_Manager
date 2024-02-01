@@ -12,14 +12,14 @@ const actions = {
   [COMMANDS.LS]: ls,
 };
 
-const executeCommand = command => {
+const executeCommand = async (command) => {
   const action = actions[command.name];
   
   console.log(); // for formatting output
 
   try {
     if (action) {
-      action(command.args);
+      await action(command.args);
     } else {
       throw new CustomError(NO_SUCH_CMD_ERR_MSG);
     }

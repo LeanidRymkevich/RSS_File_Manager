@@ -10,9 +10,9 @@ const launchApp = async () => {
   printWelcomeMsg();
   printEnterCommandMsg();
 
-  process.stdin.on('data', data => {
+  process.stdin.on('data', async (data) => {
     const command = parseCommand(data);
-    executeCommand(command);
+    await executeCommand(command);
     printEnterCommandMsg();
   });
   
