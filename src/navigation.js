@@ -1,10 +1,25 @@
 import { homedir } from 'os';
+import { sep } from 'path';
 
-const homeDirPath = homedir();
+let workingDirPath = homedir();
 
-let workingDirPath = homeDirPath;
+const up = () => {
+  const parts = workingDirPath.split(sep);
+  console.log(parts);
+};
+
+const cd = pathToDir => {
+  console.log(pathToDir);
+};
+
+const ls = () => {
+  console.log('ls-command');
+};
+
 
 export {
-  homeDirPath,
   workingDirPath,
+  up,
+  cd,
+  ls,
 };
