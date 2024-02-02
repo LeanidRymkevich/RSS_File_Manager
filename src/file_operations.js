@@ -3,10 +3,10 @@ import { createWriteStream, createReadStream } from 'fs';
 import { mkdir } from 'fs/promises';
 import { pipeline } from 'stream/promises';
 
-import CustomError from './CustomError.js';
+import { OperationError } from './custom_errors.js';
 
-const MKDIR_ERR_MSG = 'Error on new directory creation';
-const COPY_ERR_MSG = 'Error on file copying';
+const MKDIR_ERR_MSG = 'Error on new directory creation.';
+const COPY_ERR_MSG = 'Error on file copying.';
 
 
 const customCopyFile = async (pathToFile, pathToFolder) => {
@@ -18,7 +18,7 @@ const customCopyFile = async (pathToFile, pathToFolder) => {
   try {
     await mkdir(pathToFolder, {recursive: true});
   } catch {
-    throw new CustomError(MKDIR_ERR_MSG);
+    throw new OperationError(MKDIR_ERR_MSG);
   }
 
   try {
@@ -27,7 +27,7 @@ const customCopyFile = async (pathToFile, pathToFolder) => {
   
     await pipeline(rs, ws);
   } catch {
-    throw new CustomError(COPY_ERR_MSG);
+    throw new OperationError(COPY_ERR_MSG);
   }
 };
 

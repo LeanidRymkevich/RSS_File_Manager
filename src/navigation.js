@@ -1,11 +1,12 @@
 import { homedir } from 'os';
 import { sep, isAbsolute, parse, resolve, join } from 'path';
-import { access, readdir, stat } from 'fs/promises';
+import { readdir, stat } from 'fs/promises';
 
-import CustomError from './CustomError.js';
+import { InputError, OperationError } from './custom_errors.js';
 import { sortFolderItems, getFolderItemsInfo } from './utils.js';
 
-const FOLDER_NOT_EXISTS_MSG = 'The folder at this path does not exist';
+const FOLDER_NOT_EXISTS_MSG = 'The folder at this path does not exist!';
+const NOT_FOLDER_ERR_MSG = 'The path entered refers to a file, not a folder!'
 
 let workDirPath = homedir();
 
@@ -15,7 +16,7 @@ const getAbsolutePath = path => {
   const wrongSep = sep === '\\' ? '/' : '\\';
 
   if (path.includes(wrongSep)) 
-    throw new CustomError(`You use wrong path separator for this OS. Use '${sep}' instead!`);
+    throw new InputError(`You use wrong path separator for this OS. Use '${sep}' instead!`);
 
   if (isAbsolute(path)) {
     const pathWithDelRoot = path.split(sep).slice(1).join(sep);
@@ -35,16 +36,16 @@ const up = () => {
   workDirPath = cutParts.join(sep);
 };
 
-const cd = async (pathToDir) => {
-  const {ext} = parse(pathToDir[0]);
-  if (ext) throw new CustomError(FOLDER_NOT_EXISTS_MSG);
-  
+const cd = async (pathToDir) => {  
   const path = getAbsolutePath(pathToDir[0]);
   try {
-    await access(path);
+    const stats = await stat(path);
+    if (!stats.isDirectory()) throw new InputError(NOT_FOLDER_ERR_MSG)
+
     workDirPath = path;
-  } catch {
-    throw new CustomError(FOLDER_NOT_EXISTS_MSG); 
+  } catch(err) {
+    if (err instanceof InputError) throw err;
+    throw new OperationError(FOLDER_NOT_EXISTS_MSG); 
   }
 };
 

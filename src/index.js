@@ -1,10 +1,9 @@
 import { 
   printWelcomeMsg,
   printEnterCommandMsg
-} from './UI.js';
+} from './ui.js';
 import { parseCommand } from './utils.js';
-import executeCommand from './controller.js';
-import { COMMANDS } from './constants.js';
+import { executeCommand, COMMANDS} from './controller.js';
 
 const launchApp = async () => {
   printWelcomeMsg();
