@@ -15,7 +15,7 @@ const launchApp = async () => {
     printEnterCommandMsg();
   });
   
-  process.on('SIGINT', () => executeCommand({name: COMMANDS.EXIT, args: undefined}));
+  process.on('SIGINT', () => executeCommand({name: COMMANDS.EXIT, args: []}));
 };
 
 await launchApp();

@@ -1,21 +1,24 @@
 import { finishAppExecution } from './ui.js';
 import { InputError } from './custom_errors.js';
 import { up, cd, ls } from './navigation.js';
+import { customCopyFile } from './file_operations.js';
 
 const NO_SUCH_CMD_ERR_MSG = 'Such a command not found';
 
 const COMMANDS = {
   EXIT: '.exit',
-  UP: 'up',
-  CD: 'cd',
-  LS: 'ls',
+  MOVE_UP_FOLDER_TREE: 'up',
+  MOVE_TO_PATH: 'cd',
+  SHOW_FOLDER_ITEMS: 'ls',
+  COPY_FILE: 'cp',
 }
 
 const actions = {
   [COMMANDS.EXIT]: finishAppExecution,
-  [COMMANDS.UP]: up,
-  [COMMANDS.CD]: cd,
-  [COMMANDS.LS]: ls,
+  [COMMANDS.MOVE_UP_FOLDER_TREE]: up,
+  [COMMANDS.MOVE_TO_PATH]: cd,
+  [COMMANDS.SHOW_FOLDER_ITEMS]: ls,
+  [COMMANDS.COPY_FILE]: customCopyFile,
 };
 
 const executeCommand = async (command) => {
