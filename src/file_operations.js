@@ -1,6 +1,6 @@
-import { parse, join } from 'path';
+import { parse, sep } from 'path';
 import { createWriteStream, createReadStream } from 'fs';
-import { mkdir } from 'fs/promises';
+import { copyFile, mkdir } from 'fs/promises';
 import { pipeline } from 'stream/promises';
 
 import { OperationError } from './custom_errors.js';
@@ -13,7 +13,7 @@ const customCopyFile = async (pathToFile, pathToFolder) => {
   let {dir: fileDir, ext: fileExt, name: fileName} = parse(filePath);
 
   if (fileDir === folderPath) fileName = `${fileName}-copy`;
-  const destinationPath = join(folderPath, fileName, fileExt);
+  const destinationPath = `${folderPath}${sep}${fileName}${fileExt}`;
 
   try {
     await mkdir(folderPath, {recursive: true});
@@ -34,13 +34,12 @@ const customCopyFile = async (pathToFile, pathToFolder) => {
   } catch {
     throw new OperationError(`Failed to create file at the path - ${destinationPath}.`);
   }
-
+  
   try {
     await pipeline(rs, ws);
   } catch {
-    throw new OperationError(`Error while file copying`);
+    throw new OperationError(`Error while copying ${filePath} into ${destinationPath}`);
   }
-  
 };
 
 export { customCopyFile }
