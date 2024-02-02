@@ -1,6 +1,6 @@
 import { join, parse, sep } from 'path';
 import { createWriteStream, createReadStream, } from 'fs';
-import { mkdir, writeFile, rename } from 'fs/promises';
+import { mkdir, writeFile, rename, unlink } from 'fs/promises';
 import { pipeline } from 'stream/promises';
 
 import { OperationError } from './custom_errors.js';
@@ -40,7 +40,7 @@ const customReadFile = async (pathToFile) => {
     rs = createReadStream(filePath, {encoding: 'utf-8'});
 
     await pipeline(rs, process.stdout, {end: false});
-    
+
     console.log(); // for formatting
   } catch(err) {
     throw new OperationError(err.message);
@@ -72,9 +72,28 @@ const renameFile = async (pathToFile, newName) => {
   }
 };
 
+const deleteFile = async (pathToFile) => {
+  checkMissingAgs([pathToFile]);
+
+  const filePath = getAbsolutePath(pathToFile);
+
+  try {
+    await unlink(filePath);
+  } catch(err) {
+    throw new OperationError(err.message);
+  }
+};
+
+const moveFile = async (pathToFile, pathToFolder) => {
+  await customCopyFile(pathToFile, pathToFolder);
+  await deleteFile(pathToFile);
+};
+
 export {
   customCopyFile,
   customReadFile,
   createEmptyFile,
   renameFile,
+  deleteFile,
+  moveFile,
 };

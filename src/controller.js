@@ -6,6 +6,8 @@ import {
   customReadFile,
   createEmptyFile,
   renameFile,
+  deleteFile,
+  moveFile,
 } from './file_operations.js';
 
 const COMMANDS = {
@@ -17,6 +19,8 @@ const COMMANDS = {
   READ_FILE: 'cat',
   CREATE_EMPTY_FILE: 'add',
   RENAME_FILE: 'rn',
+  DELETE_FILE: 'rm',
+  MOVE_FILE: 'mv',
 };
 
 const actions = {
@@ -28,6 +32,8 @@ const actions = {
   [COMMANDS.READ_FILE]: customReadFile,
   [COMMANDS.CREATE_EMPTY_FILE]: createEmptyFile,
   [COMMANDS.RENAME_FILE]: renameFile,
+  [COMMANDS.DELETE_FILE]: deleteFile,
+  [COMMANDS.MOVE_FILE]: moveFile,
 };
 
 const executeCommand = async (command) => {
