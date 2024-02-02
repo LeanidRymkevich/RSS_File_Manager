@@ -1,6 +1,6 @@
 import { join, parse, sep } from 'path';
 import { createWriteStream, createReadStream, } from 'fs';
-import { mkdir, writeFile } from 'fs/promises';
+import { mkdir, writeFile, rename } from 'fs/promises';
 import { pipeline } from 'stream/promises';
 
 import { OperationError } from './custom_errors.js';
@@ -79,10 +79,20 @@ const createEmptyFile = async (fileName) => {
 
 const renameFile = async (pathToFile, newName) => {
   checkMissingAgs([pathToFile, newName]);
+
+  const filePath = getAbsolutePath(pathToFile);
+  const newPath = filePath.slice(0, filePath.lastIndexOf(sep) + 1) + newName;
+  
+  try {
+    await rename(filePath, newPath);
+  } catch {
+    throw new OperationError(`Error while ${filePath} file renaming.`);
+  }
 };
 
 export {
   customCopyFile,
   customReadFile,
   createEmptyFile,
+  renameFile,
 };

@@ -60,8 +60,8 @@ const ls = async () => {
     const sortedItemsInfo = sortFolderItems(itemsInfo);
 
     console.table(sortedItemsInfo);
-  } catch {
-    throw new OperationError();
+  } catch(err) {
+    throw new OperationError(err.message);
   }
 };
 
