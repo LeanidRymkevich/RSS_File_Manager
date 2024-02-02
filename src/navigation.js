@@ -5,9 +5,6 @@ import { readdir, stat } from 'fs/promises';
 import { InputError, OperationError } from './custom_errors.js';
 import { sortFolderItems, getFolderItemsInfo } from './utils.js';
 
-const FOLDER_NOT_EXISTS_MSG = 'The folder at this path does not exist!';
-const NOT_FOLDER_ERR_MSG = 'The path entered refers to a file, not a folder!'
-
 let workDirPath = homedir();
 
 const getAbsolutePath = path => {
@@ -40,23 +37,28 @@ const cd = async (pathToDir) => {
   const path = getAbsolutePath(pathToDir);
   try {
     const stats = await stat(path);
-    if (!stats.isDirectory()) throw new InputError(NOT_FOLDER_ERR_MSG)
+    if (!stats.isDirectory()) 
+      throw new InputError(`Path ${path} refers to a file, not to a folder!`);
 
     workDirPath = path;
   } catch(err) {
     if (err instanceof InputError) throw err;
-    throw new OperationError(FOLDER_NOT_EXISTS_MSG); 
+    throw new OperationError(`The folder at the path - ${path} doesn't exist!`); 
   }
 };
 
 const ls = async () => {
-  const folderItemsNames = await readdir (workDirPath);
-  const isDirPromises = folderItemsNames.map(item => stat(join(workDirPath, item)).then(stat => stat.isDirectory()));
-  const isDirObjs = await Promise.allSettled(isDirPromises);
-  const itemsInfo = getFolderItemsInfo(folderItemsNames, isDirObjs);
-  const sortedItemsInfo = sortFolderItems(itemsInfo);
+  try {
+    const folderItemsNames = await readdir (workDirPath);
+    const isDirObjs = await Promise.allSettled(isDirPromises);
+    const itemsInfo = getFolderItemsInfo(folderItemsNames, isDirObjs);
+    const sortedItemsInfo = sortFolderItems(itemsInfo);
+    const isDirPromises = folderItemsNames.map(item => stat(join(workDirPath, item)).then(stat => stat.isDirectory()));
 
-  console.table(sortedItemsInfo);
+    console.table(sortedItemsInfo);
+  } catch {
+    throw new OperationError();
+  }
 };
 
 export {

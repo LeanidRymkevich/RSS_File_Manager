@@ -1,14 +1,10 @@
-import { parse, sep, join } from 'path';
+import { parse, join } from 'path';
 import { createWriteStream, createReadStream } from 'fs';
 import { mkdir } from 'fs/promises';
 import { pipeline } from 'stream/promises';
 
 import { OperationError } from './custom_errors.js';
 import { getAbsolutePath } from './navigation.js';
-
-const MKDIR_ERR_MSG = 'Error on new directory creation.';
-const COPY_ERR_MSG = 'Error on file copying.';
-
 
 const customCopyFile = async (pathToFile, pathToFolder) => {
   const filePath = getAbsolutePath(pathToFile);
@@ -22,17 +18,29 @@ const customCopyFile = async (pathToFile, pathToFolder) => {
   try {
     await mkdir(folderPath, {recursive: true});
   } catch {
-    throw new OperationError(MKDIR_ERR_MSG);
+    throw new OperationError(`Failed to create folder at the path - ${filePath}.`);
+  }
+
+  let rs;
+  try {
+    rs = createReadStream(filePath);    
+  } catch {
+    throw new OperationError(`File '${filePath}' was deleted or not exists!`);
+  }
+
+  let ws;
+  try {
+    ws = createWriteStream(destinationPath);
+  } catch {
+    throw new OperationError(`Failed to create file at the path - ${destinationPath}.`);
   }
 
   try {
-    const rs = createReadStream(filePath);
-    const ws = createWriteStream(destinationPath);
-  
     await pipeline(rs, ws);
   } catch {
-    throw new OperationError(COPY_ERR_MSG);
+    throw new OperationError(`Error while file copying`);
   }
+  
 };
 
 export { customCopyFile }
