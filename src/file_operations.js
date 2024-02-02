@@ -1,6 +1,6 @@
 import { parse, sep } from 'path';
-import { createWriteStream, createReadStream } from 'fs';
-import { copyFile, mkdir } from 'fs/promises';
+import { createWriteStream, createReadStream, } from 'fs';
+import { mkdir } from 'fs/promises';
 import { pipeline } from 'stream/promises';
 
 import { OperationError } from './custom_errors.js';
@@ -42,4 +42,26 @@ const customCopyFile = async (pathToFile, pathToFolder) => {
   }
 };
 
-export { customCopyFile }
+const customReadFile = async (pathToFile) => {
+  const filePath = getAbsolutePath(pathToFile);
+
+  let rs;
+  try {
+    rs = createReadStream(filePath, {encoding: 'utf-8'});
+  } catch {
+    throw new OperationError(`File '${filePath}' was deleted or not exists!`);
+  }
+
+  
+  try {
+    await pipeline(rs, process.stdout, {end: false});
+    console.log(); // for formatting
+  } catch {
+    throw new OperationError(`Error while file '${filePath}' reading.`);
+  }
+};
+
+export {
+  customCopyFile,
+  customReadFile,
+};

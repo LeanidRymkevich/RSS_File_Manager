@@ -1,7 +1,10 @@
 import { finishAppExecution } from './ui.js';
 import { InputError } from './custom_errors.js';
 import { up, cd, ls } from './navigation.js';
-import { customCopyFile } from './file_operations.js';
+import {
+  customCopyFile,
+  customReadFile,
+} from './file_operations.js';
 
 const COMMANDS = {
   EXIT: '.exit',
@@ -9,7 +12,8 @@ const COMMANDS = {
   MOVE_TO_PATH: 'cd',
   SHOW_FOLDER_ITEMS: 'ls',
   COPY_FILE: 'cp',
-}
+  READ_FILE: 'cat',
+};
 
 const actions = {
   [COMMANDS.EXIT]: finishAppExecution,
@@ -17,6 +21,7 @@ const actions = {
   [COMMANDS.MOVE_TO_PATH]: cd,
   [COMMANDS.SHOW_FOLDER_ITEMS]: ls,
   [COMMANDS.COPY_FILE]: customCopyFile,
+  [COMMANDS.READ_FILE]: customReadFile,
 };
 
 const executeCommand = async (command) => {

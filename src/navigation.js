@@ -11,8 +11,8 @@ const getAbsolutePath = path => {
   const { root } = parse(workDirPath);
   const { root: pathRoot } = parse(path);
   const wrongSep = sep === '\\' ? '/' : '\\';
-  
-  if (path.includes(wrongSep)) 
+
+  if (path.includes(wrongSep))
     throw new InputError(`You use wrong path separator for this OS. Use '${sep}' instead!`);
 
   if (isAbsolute(path)) {
@@ -33,27 +33,27 @@ const up = () => {
   workDirPath = cutParts.join(sep);
 };
 
-const cd = async (pathToDir) => {  
+const cd = async (pathToDir) => {
   const path = getAbsolutePath(pathToDir);
   try {
     const stats = await stat(path);
-    if (!stats.isDirectory()) 
+    if (!stats.isDirectory())
       throw new InputError(`Path ${path} refers to a file, not to a folder!`);
 
     workDirPath = path;
-  } catch(err) {
+  } catch (err) {
     if (err instanceof InputError) throw err;
-    throw new OperationError(`The folder at the path - ${path} doesn't exist!`); 
+    throw new OperationError(`The folder at the path - ${path} doesn't exist!`);
   }
 };
 
 const ls = async () => {
   try {
     const folderItemsNames = await readdir (workDirPath);
+    const isDirPromises = folderItemsNames.map(item => stat(join(workDirPath, item)).then(stat => stat.isDirectory()));
     const isDirObjs = await Promise.allSettled(isDirPromises);
     const itemsInfo = getFolderItemsInfo(folderItemsNames, isDirObjs);
     const sortedItemsInfo = sortFolderItems(itemsInfo);
-    const isDirPromises = folderItemsNames.map(item => stat(join(workDirPath, item)).then(stat => stat.isDirectory()));
 
     console.table(sortedItemsInfo);
   } catch {
