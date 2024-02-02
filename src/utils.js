@@ -1,5 +1,7 @@
 const parseCommand = data => {
-  const parts = data.toString().trim().split(' ').map(part => part.replaceAll('-', ''));
+  const parts = data.toString().trim()
+                               .split(' ')
+                               .map(part => part.startsWith('--') ? part.slice(2, -1) : part);
   return {
     name: parts[0],
     args: parts.slice(1),
