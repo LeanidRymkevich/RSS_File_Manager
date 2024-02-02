@@ -25,7 +25,7 @@ const executeCommand = async (command) => {
 
   try {
     if (action) {
-      await action(command.args);
+      await action(...command.args);
     } else {
       throw new InputError(NO_SUCH_CMD_ERR_MSG);
     }

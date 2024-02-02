@@ -37,7 +37,7 @@ const up = () => {
 };
 
 const cd = async (pathToDir) => {  
-  const path = getAbsolutePath(pathToDir[0]);
+  const path = getAbsolutePath(pathToDir);
   try {
     const stats = await stat(path);
     if (!stats.isDirectory()) throw new InputError(NOT_FOLDER_ERR_MSG)
