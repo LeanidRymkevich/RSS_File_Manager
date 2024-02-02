@@ -4,6 +4,7 @@ import { readdir, stat } from 'fs/promises';
 
 import { InputError, OperationError } from './custom_errors.js';
 import { sortFolderItems, getFolderItemsInfo } from './utils.js';
+import { checkMissingAgs } from './utils.js';
 
 let workDirPath = homedir();
 
@@ -34,7 +35,10 @@ const up = () => {
 };
 
 const cd = async (pathToDir) => {
+  checkMissingAgs([pathToDir]);
+
   const path = getAbsolutePath(pathToDir);
+
   try {
     const stats = await stat(path);
     if (!stats.isDirectory())

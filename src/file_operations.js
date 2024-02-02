@@ -5,8 +5,11 @@ import { pipeline } from 'stream/promises';
 
 import { OperationError } from './custom_errors.js';
 import { getAbsolutePath, workDirPath } from './navigation.js';
+import { checkMissingAgs } from './utils.js';
 
 const customCopyFile = async (pathToFile, pathToFolder) => {
+  checkMissingAgs([pathToFile, pathToFolder]);
+
   const filePath = getAbsolutePath(pathToFile);
   const folderPath = getAbsolutePath(pathToFolder);
 
@@ -43,6 +46,8 @@ const customCopyFile = async (pathToFile, pathToFolder) => {
 };
 
 const customReadFile = async (pathToFile) => {
+  checkMissingAgs([pathToFile]);
+
   const filePath = getAbsolutePath(pathToFile);
 
   let rs;
@@ -61,6 +66,8 @@ const customReadFile = async (pathToFile) => {
 };
 
 const createEmptyFile = async (fileName) => {
+  checkMissingAgs([fileName]);
+
   const filePath = join(workDirPath, fileName);
 
   try {
@@ -68,6 +75,10 @@ const createEmptyFile = async (fileName) => {
   } catch {
     throw new OperationError(`Error while file '${filePath}' creating.`);
   }
+};
+
+const renameFile = async (pathToFile, newName) => {
+  checkMissingAgs([pathToFile, newName]);
 };
 
 export {

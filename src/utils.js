@@ -1,3 +1,5 @@
+import { InputError } from './custom_errors.js';
+
 const parseCommand = data => {
   const parts = data.toString().trim()
                                .split(' ')
@@ -37,8 +39,16 @@ const getFolderItemsInfo = (names, isDirObjs) => {
   return itemsInfo;
 };
 
+const checkMissingAgs = args => {
+  args.forEach(arg => {
+    if (!arg || typeof arg !== 'string')
+      throw new InputError('The arguments needed for the operation has not been provided!');
+  });
+};
+
 export {
   parseCommand,
   sortFolderItems,
   getFolderItemsInfo,
+  checkMissingAgs,
 };
