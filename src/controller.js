@@ -4,6 +4,7 @@ import { up, cd, ls } from './navigation.js';
 import {
   customCopyFile,
   customReadFile,
+  createEmptyFile,
 } from './file_operations.js';
 
 const COMMANDS = {
@@ -13,6 +14,7 @@ const COMMANDS = {
   SHOW_FOLDER_ITEMS: 'ls',
   COPY_FILE: 'cp',
   READ_FILE: 'cat',
+  CREATE_EMPTY_FILE: 'add',
 };
 
 const actions = {
@@ -22,6 +24,7 @@ const actions = {
   [COMMANDS.SHOW_FOLDER_ITEMS]: ls,
   [COMMANDS.COPY_FILE]: customCopyFile,
   [COMMANDS.READ_FILE]: customReadFile,
+  [COMMANDS.CREATE_EMPTY_FILE]: createEmptyFile,
 };
 
 const executeCommand = async (command) => {

@@ -1,10 +1,10 @@
-import { parse, sep } from 'path';
+import { join, parse, sep } from 'path';
 import { createWriteStream, createReadStream, } from 'fs';
-import { mkdir } from 'fs/promises';
+import { mkdir, writeFile } from 'fs/promises';
 import { pipeline } from 'stream/promises';
 
 import { OperationError } from './custom_errors.js';
-import { getAbsolutePath } from './navigation.js';
+import { getAbsolutePath, workDirPath } from './navigation.js';
 
 const customCopyFile = async (pathToFile, pathToFolder) => {
   const filePath = getAbsolutePath(pathToFile);
@@ -52,7 +52,6 @@ const customReadFile = async (pathToFile) => {
     throw new OperationError(`File '${filePath}' was deleted or not exists!`);
   }
 
-  
   try {
     await pipeline(rs, process.stdout, {end: false});
     console.log(); // for formatting
@@ -61,7 +60,18 @@ const customReadFile = async (pathToFile) => {
   }
 };
 
+const createEmptyFile = async (fileName) => {
+  const filePath = join(workDirPath, fileName);
+
+  try {
+    await writeFile(filePath, '');
+  } catch {
+    throw new OperationError(`Error while file '${filePath}' creating.`);
+  }
+};
+
 export {
   customCopyFile,
   customReadFile,
+  createEmptyFile,
 };
