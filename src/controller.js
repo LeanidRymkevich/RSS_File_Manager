@@ -9,6 +9,7 @@ import {
   deleteFile,
   moveFile,
 } from './file_operations.js';
+import sysInfo from './system_info.js';
 
 const COMMANDS = {
   EXIT: '.exit',
@@ -21,6 +22,7 @@ const COMMANDS = {
   RENAME_FILE: 'rn',
   DELETE_FILE: 'rm',
   MOVE_FILE: 'mv',
+  SYSTEM_INFO: 'os',
 };
 
 const actions = {
@@ -34,6 +36,7 @@ const actions = {
   [COMMANDS.RENAME_FILE]: renameFile,
   [COMMANDS.DELETE_FILE]: deleteFile,
   [COMMANDS.MOVE_FILE]: moveFile,
+  [COMMANDS.SYSTEM_INFO]: sysInfo,
 };
 
 const executeCommand = async (command) => {
