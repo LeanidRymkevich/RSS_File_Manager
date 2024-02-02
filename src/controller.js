@@ -10,6 +10,7 @@ import {
   moveFile,
 } from './file_operations.js';
 import sysInfo from './system_info.js';
+import calcHash from './hash.js';
 
 const COMMANDS = {
   EXIT: '.exit',
@@ -23,6 +24,7 @@ const COMMANDS = {
   DELETE_FILE: 'rm',
   MOVE_FILE: 'mv',
   SYSTEM_INFO: 'os',
+  CALCULATE_HASH: 'hash',
 };
 
 const actions = {
@@ -37,6 +39,7 @@ const actions = {
   [COMMANDS.DELETE_FILE]: deleteFile,
   [COMMANDS.MOVE_FILE]: moveFile,
   [COMMANDS.SYSTEM_INFO]: sysInfo,
+  [COMMANDS.CALCULATE_HASH]: calcHash,
 };
 
 const executeCommand = async (command) => {
