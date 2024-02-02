@@ -20,28 +20,13 @@ const customCopyFile = async (pathToFile, pathToFolder) => {
 
   try {
     await mkdir(folderPath, {recursive: true});
-  } catch {
-    throw new OperationError(`Failed to create folder at the path - ${filePath}.`);
-  }
 
-  let rs;
-  try {
-    rs = createReadStream(filePath);    
-  } catch {
-    throw new OperationError(`File '${filePath}' was deleted or not exists!`);
-  }
+    const rs = createReadStream(filePath);
+    const ws = createWriteStream(destinationPath);
 
-  let ws;
-  try {
-    ws = createWriteStream(destinationPath);
-  } catch {
-    throw new OperationError(`Failed to create file at the path - ${destinationPath}.`);
-  }
-  
-  try {
     await pipeline(rs, ws);
-  } catch {
-    throw new OperationError(`Error while copying ${filePath} into ${destinationPath}`);
+  } catch(err) {
+    throw new OperationError(err.message);
   }
 };
 
@@ -53,15 +38,12 @@ const customReadFile = async (pathToFile) => {
   let rs;
   try {
     rs = createReadStream(filePath, {encoding: 'utf-8'});
-  } catch {
-    throw new OperationError(`File '${filePath}' was deleted or not exists!`);
-  }
 
-  try {
     await pipeline(rs, process.stdout, {end: false});
+    
     console.log(); // for formatting
-  } catch {
-    throw new OperationError(`Error while file '${filePath}' reading.`);
+  } catch(err) {
+    throw new OperationError(err.message);
   }
 };
 
@@ -72,8 +54,8 @@ const createEmptyFile = async (fileName) => {
 
   try {
     await writeFile(filePath, '');
-  } catch {
-    throw new OperationError(`Error while file '${filePath}' creating.`);
+  } catch(err) {
+    throw new OperationError(err.message);
   }
 };
 
@@ -85,8 +67,8 @@ const renameFile = async (pathToFile, newName) => {
   
   try {
     await rename(filePath, newPath);
-  } catch {
-    throw new OperationError(`Error while ${filePath} file renaming.`);
+  } catch(err) {
+    throw new OperationError(err.message);
   }
 };
 
