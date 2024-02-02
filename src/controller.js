@@ -11,6 +11,7 @@ import {
 } from './file_operations.js';
 import sysInfo from './system_info.js';
 import calcHash from './hash.js';
+import { compress, decompress } from './compression.js'
 
 const COMMANDS = {
   EXIT: '.exit',
@@ -25,6 +26,8 @@ const COMMANDS = {
   MOVE_FILE: 'mv',
   SYSTEM_INFO: 'os',
   CALCULATE_HASH: 'hash',
+  COMPRESS_FILE: 'compress',
+  DECOMPRESS_FILE: 'decompress',
 };
 
 const actions = {
@@ -40,6 +43,8 @@ const actions = {
   [COMMANDS.MOVE_FILE]: moveFile,
   [COMMANDS.SYSTEM_INFO]: sysInfo,
   [COMMANDS.CALCULATE_HASH]: calcHash,
+  [COMMANDS.COMPRESS_FILE]: compress,
+  [COMMANDS.DECOMPRESS_FILE]: decompress,
 };
 
 const executeCommand = async (command) => {

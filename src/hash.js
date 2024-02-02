@@ -1,10 +1,10 @@
 import { createReadStream, } from 'fs';
 import { createHash } from 'crypto';
+import { pipeline } from 'stream/promises';
 
 import { OperationError } from './custom_errors.js';
 import { getAbsolutePath } from './navigation.js';
 import { checkMissingAgs } from './utils.js';
-import { finished, pipeline } from 'stream/promises';
 
 const calcHash = async (pathToFile) => {
   checkMissingAgs([pathToFile]);
