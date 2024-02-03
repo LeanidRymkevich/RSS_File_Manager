@@ -1,6 +1,6 @@
 import { workDirPath } from './navigation.js';
 
-const enteredUserName = process.argv[2].split('=')[1];
+const enteredUserName = `${process.argv[2].split('=')[1]} ${process.argv.slice(3).join(' ')}`;
 
 const printWelcomeMsg = () => console.log(`Welcome to the File Manager, ${enteredUserName}!\n`);
 
