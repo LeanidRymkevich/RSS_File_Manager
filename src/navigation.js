@@ -4,17 +4,15 @@ import { readdir, stat } from 'fs/promises';
 
 import { InputError, OperationError } from './custom_errors.js';
 import { sortFolderItems, getFolderItemsInfo } from './utils.js';
-import { checkMissingAgs } from './utils.js';
+import { checkMissingAgs, checkPathOnForbidChars } from './utils.js';
 
 let workDirPath = homedir();
 
 const getAbsolutePath = path => {
+  checkPathOnForbidChars(path);
+
   const { root } = parse(workDirPath);
   const { root: pathRoot } = parse(path);
-  const wrongSep = sep === '\\' ? '/' : '\\';
-
-  if (path.includes(wrongSep))
-    throw new InputError(`You use wrong path separator for this OS. Use '${sep}' instead!`);
 
   if (isAbsolute(path)) {
     const pathWithDelRoot = path.split(sep).slice(1).join(sep);

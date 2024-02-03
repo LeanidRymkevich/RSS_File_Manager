@@ -1,3 +1,5 @@
+import { sep, isAbsolute, parse, resolve, join } from 'path';
+
 import { InputError } from './custom_errors.js';
 
 const parseCommand = data => {
@@ -46,9 +48,24 @@ const checkMissingAgs = args => {
   });
 };
 
+const checkPathOnForbidChars = path => {
+  const { root } = parse(path);
+  const pathToCheck = path.replace(root.slice(0, -1), '');
+  const wrongSep = sep === '\\' ? '/' : '\\';
+  const forbiddenPathChars = [wrongSep, '*', '?', ':', '"', '<', '>', '|'];
+  const errMsg = `Path shouldn't include next chars: ${forbiddenPathChars.toString()} (except : for root in Windows). ` + 
+    `The ${sep} char will be treated as a path separator`;
+
+  forbiddenPathChars.forEach(char => {
+    if (pathToCheck.includes(char))
+      throw new InputError(errMsg);
+  });
+};
+
 export {
   parseCommand,
   sortFolderItems,
   getFolderItemsInfo,
   checkMissingAgs,
+  checkPathOnForbidChars,
 };
