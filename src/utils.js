@@ -1,14 +1,52 @@
-import { sep, isAbsolute, parse, resolve, join } from 'path';
+import { sep, parse } from 'path';
 
 import { InputError } from './custom_errors.js';
 
 const parseCommand = data => {
-  const parts = data.toString().trim()
-                               .split(' ')
-                               .map(part => part.startsWith('--') ? part.slice(2) : part);
+  const input = data.toString().trim();
+
+  let args = [];
+  let buffer = '';
+  let isQuoteOpen = false;
+
+  for(let i = 0; i < input.length; i++) {
+    const char = input[i];
+
+    if (char === '"' && !isQuoteOpen) {
+      isQuoteOpen = true;
+      continue;
+    }
+    
+    if (char === '"' && isQuoteOpen) {
+      isQuoteOpen = false;
+      args.push(buffer);
+      buffer = '';
+      continue;
+    } 
+    
+    if (isQuoteOpen) {
+      buffer += char;
+      continue;
+    }
+    
+    if (char === ' ' && !isQuoteOpen) {
+      if (!buffer) continue;
+
+      args.push(buffer);
+      buffer = ''
+      continue;
+    }
+
+    buffer += char;
+    
+    if(buffer && i === input.length - 1) args.push(buffer);
+  }
+
+  args = args.map(arg => arg.startsWith('--') ? arg.slice(2) : arg);
+
   return {
-    name: parts[0],
-    args: parts.slice(1),
+    name: args[0],
+    args: args.slice(1),
   };
 };
 
